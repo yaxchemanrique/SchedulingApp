@@ -20,6 +20,5 @@ submitBtn.addEventListener('click', (e)=> {
     e.preventDefault();
     submitBtn.style.pointerEvents = 'none';
     submitBtn.classList.add('animating');
+    openModal('animationend', buttonAnimation, successDialog);
 });
-
-openModal('animationend', buttonAnimation, successDialog);
