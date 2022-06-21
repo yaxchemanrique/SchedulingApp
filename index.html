@@ -15,9 +15,9 @@
 <body>
     <nav>
         <ul class="nav-bar">
-            <li class="step current-step">1</li>
-            <li class="step">2</li>
-            <li class="step">3</li>
+            <li class="navbar-step current-step">1</li>
+            <li class="navbar-step">2</li>
+            <li class="navbar-step">3</li>
         </ul>
     </nav>
     <div class="weather-container">
@@ -32,8 +32,8 @@
     <div class="image-container">
         <img src="assets/img/Calendar@3.png" alt="calendario">
     </div>
-    <form>
-        <div data-step='1' class="form-card-container">
+    <form id="multistep-form">
+        <div data-step class="form-card-container">
             <p class="step-title">Step 1</p>
             <p class="question">What type of appointent would you like to book?</p>
 
@@ -56,13 +56,13 @@
                 </div>
             </div>
         
-            <button type="button" class="next-btn">
+            <button type="button" class="next-btn" data-next-btn>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.6875 4L21 12L12.6875 20M2 12H21H2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
-        <div data-step='2' class="form-card-container">
+        <div data-step class="form-card-container">
             <p class="step-title">Step 2</p>
             <p class="question">Fill out your personal information:</p>
 
@@ -81,18 +81,18 @@
                 <textarea name="description" id="description" cols="30" rows="5"></textarea>
             </div>
 
-            <button type="button" class="next-btn">
+            <button type="button" class="next-btn" data-next-btn>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.6875 4L21 12L12.6875 20M2 12H21H2Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
         </div>
-        <div data-step='3' class="form-card-container active">
+        <div data-step class="form-card-container">
             <p class="step-title">Step 3</p>
             <p class="question">When would you like to book?</p>
             <div class="calendar-container">
                 <div class="calendar-header">
-                    <div class="move-btn" id="next-btn">
+                    <div class="move-btn" id="prev-btn">
                         <svg width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M15.548 4.75977L7.38135 12.9264L15.548 21.0931" stroke="#E6A122" stroke-width="2.88235" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -101,7 +101,7 @@
                         <h3 class="month" id="month-name">JAN</h3>
                         <h3 class="year" id="year">1993</h3>
                     </div>
-                    <div class="move-btn" id="next-btn">
+                    <div class="move-btn" id="prev-btn">
                         <svg width="25" height="26" viewBox="0 0 25 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M8.54883 4.75977L16.7155 12.9264L8.54883 21.0931" stroke="#E6A122" stroke-width="2.88235" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -163,7 +163,7 @@
             </div>
         </div>
         <dialog id="time-dialog" class="time-dialog">
-            <div data-step='4'>
+            <div class="time-dialog-content">
                 <p class="question">At what time?</p>
                 <p class="time-subtitle" id="morning">Morning</p>
                 <div class="time-tags-container" id="time-tags-morning">

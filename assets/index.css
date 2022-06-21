@@ -88,7 +88,7 @@ form {
 	align-items: center;
 }
 
-.step {
+.navbar-step {
 	width: 4rem;
 	height: 4rem;
 	text-align: center;
@@ -99,7 +99,7 @@ form {
 	z-index: 3;
 }
 
-.step::before {
+.navbar-step::before {
 	content: "";
 	display: block;
 	width: calc((600px - var(--container-padding) - 12rem) / 2);
@@ -111,11 +111,11 @@ form {
 	position: relative;
 }
 
-.step:last-of-type::before {
+.navbar-step:last-of-type::before {
 	display: none;
 }
 
-.current-step {
+.navbar-step.current-step {
 	width: 4.5rem;
 	height: 4.5rem;
 	box-shadow: 0 0 0 6px var(--clr-light-blue), 0 0 0 9px var(--clr-pink);
@@ -143,7 +143,7 @@ form {
 	display: none;
 }
 
-.active {
+.form-card-container.active {
 	display: block;
 }
 
@@ -332,7 +332,7 @@ h3 {
 	background-color: var(--clr-green50);
 }
 
-div[data-step="4"] {
+.time-dialog-content {
 	display: flex;
 	flex-direction: column;
 	gap: 1em;
