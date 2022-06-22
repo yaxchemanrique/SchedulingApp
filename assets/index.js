@@ -12,10 +12,16 @@ const formSteps = [...multistepForm.querySelectorAll('[data-step]')];
 const nextButton = [...multistepForm.querySelectorAll('[data-next-btn]')];
 const navBarSteps = [...document.querySelectorAll('.navbar-step')];
 
-const appointmentOptionsContainer = [...document.querySelectorAll('input[name="appointment-type"]')];//document.querySelector('.grid-container');
+const appointmentOptionsContainer = [...document.querySelectorAll('input[name="appointment-type"]')];
 const appointmentOptionsArray = [...document.querySelectorAll('.form-group-radio')];
 
 let selctedAppointmentType;
+let fullName = document.getElementById('fullName').value;
+let email = '';
+let description = '';
+
+//Adds event listener to radio buttons indicating the Appointment type 
+//and adds the class to distinguish wich one was selected
 
 appointmentOptionsContainer.forEach(input => {
     input.addEventListener('click', (e)=> {
@@ -78,4 +84,33 @@ function navbarCurrentStep() {
     navBarSteps.forEach((navbarItem, index)=> {
         navbarItem.classList.toggle('current-step', index === currentStep);
     });
+}
+
+const date = new Date();
+date.setDate(1);
+const firstWeekDayIndex = date.getDay() - 1;
+const monthIndex = date.getMonth();
+const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+const year = date.getFullYear();
+const currentMonth = document.querySelector('#month-name');
+const currentYear = document.querySelector('#year');
+const calendarBody = document.querySelector('.calendar-body');
+const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+
+let days = '';
+currentMonth.innerHTML = monthsArray[monthIndex];
+currentYear.innerHTML = year;
+
+for (let i = firstWeekDayIndex; i >= 1 ; i--) {
+    days += `<div class="prev-month-day">${-1 * (i - lastDayPrevMonth)}</div>`;
+}
+
+for ( let i = 1; i <= lastDay; i++) {
+    days += `<div class="current-month-day">${i}</div>`;
+}
+
+for ( let i = 1 ; i <= 42 - firstWeekDayIndex - lastDay ; i++) {
+    days += `<div class="next-month-day">${i}</div>`;
+    calendarBody.innerHTML = days;
 }
