@@ -165,7 +165,12 @@ input[type="radio"] {
 }
 
 input[type="radio"] + label {
-	pointer-events: none;
+	cursor: pointer;
+	width: 120px;
+	height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .grid-container {
@@ -177,7 +182,6 @@ input[type="radio"] + label {
 	place-content: center;
 }
 .form-group-radio {
-	cursor: pointer;
 	height: 100%;
 	width: 100%;
 	border-radius: 3px;
@@ -196,7 +200,7 @@ input[type="radio"] + label {
 	transform: scale(1.03);
 }
 
-.checked-radio {
+.form-group-radio.checked-radio {
 	font-weight: var(--fw-bold);
 	border: solid var(--clr-green) 1.5px;
 	box-shadow: 1px 3px 5px var(--clr-green50);
