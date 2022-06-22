@@ -306,10 +306,18 @@ h3 {
 	grid-template-columns: repeat(7, 1fr);
 }
 
+.calendar-body :not(.next-month-day):nth-child(7n + 7),
+.calendar-body :not(.next-month-day):nth-child(7n + 6),
+.calendar-body :not(.prev-month-day):nth-child(7n + 7),
+.calendar-body :not(.prev-month-day):nth-child(7n + 6) {
+	opacity: 0.3;
+}
+
 .prev-month-day,
 .next-month-day {
 	color: var(--clr-grey);
 	cursor: not-allowed;
+	opacity: 1 !important;
 }
 
 .current-month-day {
