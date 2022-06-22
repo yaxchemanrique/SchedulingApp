@@ -1,6 +1,4 @@
 const timeDialog = document.querySelector('#time-dialog');
-const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
-const currentMonthDays = [...currentMonthDaysNodeList];
 
 const successDialog = document.getElementById('sucess-dialog');
 const buttonAnimation = document.getElementById('checkmark-svg');
@@ -37,9 +35,6 @@ appointmentOptionsContainer.forEach(input => {
         selctedAppointmentType = e.target.value;
     })
 })
-
-// Adds event listener to all days in the month to open the Time modal to select time to book
-currentMonthDays.forEach(currentMonthDay => openModal('click', currentMonthDay, timeDialog))
 
 //Function that sets an event Listener and opens its modal
 function openModal(listener, target, modal) {
@@ -86,31 +81,46 @@ function navbarCurrentStep() {
     });
 }
 
-const date = new Date();
-date.setDate(1);
-const firstWeekDayIndex = date.getDay() - 1;
-const monthIndex = date.getMonth();
-const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-const year = date.getFullYear();
+// Render Calendar Functions and variables
+const calendarBody = document.querySelector('.calendar-body');
 const currentMonth = document.querySelector('#month-name');
 const currentYear = document.querySelector('#year');
-const calendarBody = document.querySelector('.calendar-body');
+
+const date = new Date();
+date.setDate(1);
+const monthIndex = date.getMonth();
+const year = date.getFullYear();
+
+const firstWeekDayIndex = date.getDay() - 1;
 const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
 const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
 
+const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 let days = '';
+
 currentMonth.innerHTML = monthsArray[monthIndex];
 currentYear.innerHTML = year;
 
-for (let i = firstWeekDayIndex; i >= 1 ; i--) {
-    days += `<div class="prev-month-day">${-1 * (i - lastDayPrevMonth)}</div>`;
-}
+const renderCalendar = () => {
+    for (let i = firstWeekDayIndex; i >= 1 ; i--) {
+        days += `<div class="prev-month-day">${-1 * (i - lastDayPrevMonth)}</div>`;
+    }
+    
+    for ( let i = 1; i <= lastDay; i++) {
+        days += `<div class="current-month-day">${i}</div>`;
+    }
+    
+    for ( let i = 1 ; i <= 42 - firstWeekDayIndex - lastDay ; i++) {
+        days += `<div class="next-month-day">${i}</div>`;
+        calendarBody.innerHTML = days;
+    }
 
-for ( let i = 1; i <= lastDay; i++) {
-    days += `<div class="current-month-day">${i}</div>`;
-}
+    const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
+    currentMonthDays = [...currentMonthDaysNodeList];
 
-for ( let i = 1 ; i <= 42 - firstWeekDayIndex - lastDay ; i++) {
-    days += `<div class="next-month-day">${i}</div>`;
-    calendarBody.innerHTML = days;
-}
+    // Adds event listener to all days in the month to open the Time modal to select time to book
+    currentMonthDays.forEach(currentMonthDay => openModal('click', currentMonthDay, timeDialog))
+};
+
+renderCalendar();
+
