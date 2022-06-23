@@ -21,12 +21,19 @@
         </ul>
     </nav>
     <div class="weather-container">
-        <span id="weather-icon">icon</span>
-        <p class="country" id="country">MexicoCity, CDMX</p>
-        <p class="current-deg" id="curret-deg">20°C</p>
+        <div class="location-content">
+            <div class="weather-icon" id="weather-icon">icon</div>
+            <div class="location-time">
+                <p class="country" id="country">Mexico City, CDMX</p>
+                <p class="currentTime" id="currentTime"></p>
+            </div>
+        </div>
         <div class="hi-lo">
-            <p class="hi-lo-text" id="hi">H: <span class="hi-lo-temp" id="hi-temp">22</span>°C</p>
-            <p class="hi-lo-text" id="lo">L: <span class="hi-lo-temp" id="lo-temp">10</span>°C</p>
+            <p class="current-deg-text">
+                <span class="current-deg" id="curret-deg"></span> °C
+            </p>
+            <p class="hi-lo-text">H: <span class="hi-lo-temp" id="hi-temp"></span> °C</p>
+            <p class="hi-lo-text">L: <span class="hi-lo-temp" id="lo-temp"></span> °C</p>
         </div>
     </div>
     <div class="image-container">

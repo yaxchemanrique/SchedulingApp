@@ -15,6 +15,7 @@
 
 	--fs-36px: 2.25rem;
 	--fs-24px: 1.5rem;
+	--fs-18px: 1.125rem;
 	--fs-16px: 1rem;
 	--fs-12px: 0.75rem;
 	--fs-10px: 0.625rem;
@@ -62,12 +63,62 @@ body {
 	height: 784px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 20% auto;
+	grid-template-rows: 26% auto;
 	grid-template-areas: "weather nav-bar" "image form";
 }
 
 .weather-container {
 	grid-area: weather;
+	background-color: var(--clr-white);
+	border-radius: 10px;
+	width: fit-content;
+	height: fit-content;
+	padding: var(--container-padding);
+	margin-left: 4rem;
+}
+
+.country {
+	font-size: var(--fs-18px);
+	font-weight: var(--fw-semibold);
+	color: var(--clr-green);
+	margin-bottom: 0.3rem;
+}
+
+.currentTime {
+	font-size: var(--fs-18px);
+}
+
+.location-content,
+.hi-lo {
+	display: flex;
+	gap: 1em;
+}
+
+.hi-lo {
+	padding-top: var(--fs-16px);
+}
+
+.hi-lo-temp {
+	font-weight: var(--fw-semibold);
+}
+
+.weather-icon {
+	background-color: var(--clr-blue);
+	border-radius: 50%;
+	aspect-ratio: 1 / 1;
+	height: 50px;
+	display: grid;
+	place-content: center;
+}
+
+.current-deg-text {
+	font-size: var(--fs-18px);
+	font-weight: var(--fw-semibold);
+	color: var(--clr-mustard);
+}
+
+.hi-lo {
+	margin-top: 0.5em;
 }
 
 nav {

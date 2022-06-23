@@ -140,3 +140,63 @@ const renderCalendar = () => {
 
 renderCalendar();
 
+const longitude = -99.1331785;
+const latitude = 19.4326296;
+const currentDate = new Date();
+const currentDateTimestamp = currentDate.getTime();
+const currentTimeAmPm =  currentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+const currentTime = document.getElementById('currentTime');
+const currentDeg = document.getElementById('curret-deg');
+const highestTemp = document.getElementById('hi-temp');
+const lowestTemp = document.getElementById('lo-temp');
+const weatherIcon = document.getElementById('weather-icon');
+
+
+const API_KEY = '33e210e3244afb4f2582929f61935a15';
+const urlApi= `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${currentDateTimestamp}&appid=${API_KEY}&units=metric` 
+
+let weatherResponseJson = {};
+let iconResponseJson = {};
+
+const getCurrentWeather = async () => {
+    const response = await fetch(urlApi);
+    weatherResponseJson = await response.json();
+    console.log(weatherResponseJson);
+    
+};
+
+const renderWeather = () => {
+    const currentWeatherResults = weatherResponseJson.main;
+    currentTime.innerText = currentTimeAmPm;
+    currentDeg.innerText = currentWeatherResults.temp;
+    highestTemp.innerText = currentWeatherResults.temp_min;
+    lowestTemp.innerText = currentWeatherResults.temp_max;
+};
+
+const getWeatherIcon = async () => {
+    iconResponse = await fetch('./assets/icons.json');
+    iconResponseJson = await iconResponse.json();
+};
+
+const renderWeatherIcon = () => {
+    const iconDescription = weatherResponseJson.weather[0].description
+    console.log(iconDescription);
+    const matchingIndexIconName = iconResponseJson.weatherIcons.findIndex(name => name.name == iconDescription);
+    console.log(matchingIndexIconName);
+    if (matchingIndexIconName >= 0) {
+        weatherIcon.innerHTML = iconResponseJson.weatherIcons[matchingIndexIconName].svg
+    } else {
+        weatherIcon.innerHTML = iconResponseJson.weatherIcons[2].svg
+    }
+}
+
+(async() => {
+    await getCurrentWeather();
+    renderWeather();
+    await getWeatherIcon();
+    renderWeatherIcon();
+})();
