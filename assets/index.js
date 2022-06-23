@@ -10,10 +10,13 @@ const formSteps = [...multistepForm.querySelectorAll('[data-step]')];
 const nextButton = [...multistepForm.querySelectorAll('[data-next-btn]')];
 const navBarSteps = [...document.querySelectorAll('.navbar-step')];
 
-const appointmentOptionsContainer = [...document.querySelectorAll('input[name="appointment-type"]')];
-const appointmentOptionsArray = [...document.querySelectorAll('.form-group-radio')];
+const appointmentOptionsLabels = [...document.querySelectorAll('input[name="appointment-type"]')];
+const appointmentOptionsInputContainers = [...document.querySelectorAll('.form-group-radio')];
+
+const appointmentTimeInputs = [...document.querySelectorAll('input[name="appt-time"]')];
 
 let selctedAppointmentType;
+let selctedAppointmentTime;
 let fullName = document.getElementById('fullName').value;
 let email = '';
 let description = '';
@@ -21,11 +24,11 @@ let description = '';
 //Adds event listener to radio buttons indicating the Appointment type 
 //and adds the class to distinguish wich one was selected
 
-appointmentOptionsContainer.forEach(input => {
+appointmentOptionsLabels.forEach(input => {
     input.addEventListener('click', (e)=> {
-        appointmentOptionsArray.forEach(type => {
-            let selectedRadio = [...document.querySelectorAll('input[type="radio"] + label')];
-            selectedRadio.forEach(radio => {
+        appointmentOptionsInputContainers.forEach(type => {
+            let radioOptions = [...document.querySelectorAll('input[name="appointment-type"] + label')];
+            radioOptions.forEach(radio => {
                 radio.removeAttribute('checked');
                 radio.parentElement.classList.remove('checked-radio');
             });
@@ -36,6 +39,19 @@ appointmentOptionsContainer.forEach(input => {
     })
 })
 
+appointmentTimeInputs.forEach(input =>{
+    let labelOptions = [...document.querySelectorAll('.time-tag-label')];
+        input.addEventListener('click', (e) => {
+            const selectedLabelId = e.target.id;
+            labelOptions.forEach(label => {
+                label.classList.remove('checked');
+                console.log(label.id, selectedLabelId);
+                if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
+                    label.classList.add('checked');
+                }
+            });
+        })
+})
 //Function that sets an event Listener and opens its modal
 function openModal(listener, target, modal) {
     target.addEventListener(listener, ()=> {

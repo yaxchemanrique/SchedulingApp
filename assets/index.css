@@ -164,7 +164,7 @@ input[type="radio"] {
 	display: none;
 }
 
-input[type="radio"] + label {
+input[name="appointment-type"] + label {
 	cursor: pointer;
 	width: 120px;
 	height: 100px;
@@ -380,7 +380,20 @@ h3 {
 	opacity: 0;
 }
 
-.time-tag {
+.time-tags-container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 1rem;
+}
+
+/* Time-Tags styling, :hover, and disabled  */
+
+.time-dialog::backdrop {
+	background-color: rgba(37, 77, 113, 0.7);
+}
+
+.time-tag-label {
 	display: flex;
 	width: max-content;
 	padding: 0.5rem;
@@ -391,39 +404,23 @@ h3 {
 	cursor: pointer;
 }
 
-.time-tag label {
-	pointer-events: none;
-}
-
-.time-tags-container {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 1rem;
-}
-
-/* Time-Tags styling, :hover, and disabled  */
-
-.time-dialog::backdrop {
-	background-color: rgba(37, 77, 113, 0.7);
-}
-
-.time-tag:not(.disabled):hover {
+.time-tag-label:not(.disabled):hover {
 	border-color: var(--clr-mustard);
 	box-shadow: 1px 3px 5px var(--clr-mustard50);
 	color: var(--clr-mustard);
 	font-weight: var(--fw-bold);
 }
 
-.time-tag:not(.disabled):hover .time-icon {
+.time-tag-label:not(.disabled):hover .time-icon {
 	outline-color: transparent;
 	background-color: var(--clr-mustard);
 }
 
-.time-tag:not(.disabled):hover .plus-svg {
+.time-tag-label:not(.disabled):hover .plus-svg {
 	opacity: 1;
 }
 
-.time-tag.checked {
+.time-tag-label.checked {
 	border: solid var(--clr-green) 1px;
 	box-shadow: 1px 3px 5px var(--clr-green50);
 	color: var(--clr-green);
@@ -431,26 +428,26 @@ h3 {
 	pointer-events: none;
 }
 
-.time-tag.checked .time-icon {
+.time-tag-label.checked .time-icon {
 	outline-color: transparent;
 	background-color: var(--clr-green);
 }
 
-.time-tag.checked .checkmark-svg {
+.time-tag-label.checked .checkmark {
 	opacity: 1;
 }
 
-.time-tag.disabled {
+.time-tag-label.disabled {
 	cursor: not-allowed;
 	border: solid var(--clr-grey) 1px;
 	color: var(--clr-grey);
 }
 
-.time-tag.disabled .time-icon {
+.time-tag-label.disabled .time-icon {
 	outline-color: var(--clr-grey);
 }
 
-.time-tag.disabled .x-svg {
+.time-tag-label.disabled .x-svg {
 	opacity: 1;
 }
 
