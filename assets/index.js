@@ -173,8 +173,8 @@ const renderWeather = () => {
     const currentWeatherResults = weatherResponseJson.main;
     currentTime.innerText = currentTimeAmPm;
     currentDeg.innerText = currentWeatherResults.temp;
-    highestTemp.innerText = currentWeatherResults.temp_min;
-    lowestTemp.innerText = currentWeatherResults.temp_max;
+    highestTemp.innerText = currentWeatherResults.temp_max;
+    lowestTemp.innerText = currentWeatherResults.temp_min;
 };
 
 const getWeatherIcon = async () => {
