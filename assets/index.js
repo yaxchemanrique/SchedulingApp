@@ -13,7 +13,7 @@ const navBarSteps = [...document.querySelectorAll('.navbar-step')];
 const appointmentOptionsLabels = [...document.querySelectorAll('input[name="appointment-type"]')];
 const appointmentOptionsInputContainers = [...document.querySelectorAll('.form-group-radio')];
 
-const appointmentTimeInputs = [...document.querySelectorAll('input[name="appt-time"]')];
+
 
 const calendarBody = document.querySelector('.calendar-body');
 const currentMonth = document.querySelector('#month-name');
@@ -245,31 +245,6 @@ function showPrevMonth () {
     }
 }
 
-function openTimeModal(currentMonthDay) {
-    currentMonthDay.addEventListener('click', (e)=> {
-        timeDialog.showModal();
-        targetOpenModal =  e.target.innerText;
-        console.log(targetOpenModal);
-        (async() => {
-            console.log('entró al async');
-            await getAllTimes();
-            console.log('pasó 1await');
-            renderTimeTags();
-            console.log('pasó renderTime');
-        })();
-    });
-}
-
-//render TimeSlots in Time Modal
-
-// create time-tags with JSON info
-//add class disabled if availability is false
-//cal add event listenerxx
-const morningTagsContainer = document.querySelector('#time-tags-morning');
-const eveningTagsContainer = document.querySelector('#time-tags-evening');
-let targetOpenModal = '';
-
-
 const buttonsMonthFunctionClickListener = (button, move) => {
     button.addEventListener('click', () => {
         switch (move) {
@@ -285,22 +260,30 @@ const buttonsMonthFunctionClickListener = (button, move) => {
     });
 };
 
-function eventListenerForTimeTags() {
-    appointmentTimeInputs.forEach(input =>{
-        let labelOptions = [...document.querySelectorAll('.time-tag-label')];
-            input.addEventListener('click', (e) => {
-                const selectedLabelId = e.target.id;
-                labelOptions.forEach(label => {
-                    label.classList.remove('checked');
-                    console.log(label.id, selectedLabelId);
-                    if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
-                        label.classList.add('checked');
-                    }
-                });
-            })
+//render TimeSlots in Time Modal
+
+// create time-tags with JSON info
+//add class disabled if availability is false
+//cal add event listenerxx
+const morningTagsContainer = document.querySelector('#time-tags-morning');
+const eveningTagsContainer = document.querySelector('#time-tags-evening');
+let targetOpenModal;
+let selectedTime;
+
+function openTimeModal(currentMonthDay) {
+    currentMonthDay.addEventListener('click', (e)=> {
+        timeDialog.showModal();
+        targetOpenModal =  e.target.innerText;
+        console.log(targetOpenModal);
+        getTimesRenderTimetags();
     });
 }
 
+async function getTimesRenderTimetags() {
+    await getAllTimes();
+    renderTimeTags();
+    eventListenerForTimeTags();
+}
 
 const getAllTimes = async () => {
     const timesResponse = await fetch('./assets/appointment-slots.json');
@@ -366,4 +349,23 @@ const renderTimeTags = () =>{
             }   
         }
     }
+}
+
+function eventListenerForTimeTags() {
+    const appointmentTimeInputs = [...document.querySelectorAll('input[name="appt-time"]')];
+    appointmentTimeInputs.forEach(input =>{
+        let labelOptions = [...document.querySelectorAll('.time-tag-label')];
+        input.addEventListener('click', (e) => {
+            let selectedLabelId = e.target.id;
+            labelOptions.forEach(label => {
+                label.classList.remove('checked');
+                if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
+                    label.classList.add('checked');
+                }
+            });
+            const selectedTimeIndex= selectedLabelId.slice(4);
+            selectedTime = timesResponseJsonArray[selectedTimeIndex].time
+            console.log(selectedTime);
+        })
+    });
 }
