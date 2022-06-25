@@ -33,6 +33,7 @@
 	--clr-pink: #feb4a9;
 	--clr-green: #89d4c0;
 	--clr-green50: hsla(164, 47%, 68%, 0.502);
+	--clr-green20: hsla(164, 47%, 68%, 0.202);
 	--clr-mustard: #e6a122;
 	--clr-mustard50: hsla(39, 80%, 52%, 0.502);
 	--clr-white: #fff;
@@ -367,16 +368,23 @@ h3 {
 .prev-month-day,
 .next-month-day {
 	color: var(--clr-grey);
-	cursor: not-allowed;
 	opacity: 1 !important;
 }
 
-.current-month-day {
+.prev-month-day,
+.current-month-day,
+.next-month-day {
 	position: relative;
 	z-index: 2;
 	cursor: pointer;
 }
-.current-month-day::before {
+
+.cursor-not-allowed {
+	cursor: not-allowed;
+}
+
+.current-month-day::before,
+.next-month-day::before {
 	content: "";
 	width: 60%;
 	aspect-ratio: 1 / 1;
@@ -393,6 +401,10 @@ h3 {
 
 .current-month-day:hover::before {
 	background-color: var(--clr-green50);
+}
+
+.next-month-day:hover::before {
+	background-color: var(--clr-green20);
 }
 
 .time-dialog-content {

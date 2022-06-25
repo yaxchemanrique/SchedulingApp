@@ -15,12 +15,22 @@ const appointmentOptionsInputContainers = [...document.querySelectorAll('.form-g
 
 const appointmentTimeInputs = [...document.querySelectorAll('input[name="appt-time"]')];
 
+const calendarBody = document.querySelector('.calendar-body');
+const currentMonth = document.querySelector('#month-name');
+const currentYear = document.querySelector('#year');
+const today = new Date();
+const todayDay = today.getDate();
+const date = new Date();
+
+let buttonPrevMonth;
+let buttonNextMonth;
+let monthIndex;
+
 let selctedAppointmentType;
 let selctedAppointmentTime;
 let fullName = document.getElementById('fullName').value;
 let email = '';
 let description = '';
-
 //Adds event listener to radio buttons indicating the Appointment type 
 //and adds the class to distinguish wich one was selected
 
@@ -74,14 +84,15 @@ if (currentStep < 0) {
     currentStep = 0;
     formSteps[currentStep].classList.add('active');
     cardCurrentStep();
-    navbarCurrentStep()
+    navbarCurrentStep();
 }
 
 nextButton.forEach(button => {
     button.addEventListener('click', ()=> {
         currentStep += 1;
         cardCurrentStep();
-        navbarCurrentStep()
+        navbarCurrentStep();
+        setsButtonsMoveMonth();
     });
 })
 
@@ -97,49 +108,106 @@ function navbarCurrentStep() {
     });
 }
 
+function setsButtonsMoveMonth() {
+    if(currentStep === 2){
+        stepThree = document.querySelector('.form-card-container.active')
+        buttonPrevMonth = stepThree.querySelector('#prev-btn');
+        buttonNextMonth = stepThree.querySelector('#next-btn');
+        console.log('setsButtonsMoveMonth - if =2')
+        eventListenerMoveMonths();
+    } else {return}
+}
+
 // Render Calendar Functions and variables
-const calendarBody = document.querySelector('.calendar-body');
-const currentMonth = document.querySelector('#month-name');
-const currentYear = document.querySelector('#year');
+const buttonsMonthFunctionClickListener = (button, move) => {
+    button.addEventListener('click', () => {
+        switch (move) {
+            case 'next':
+                date.setMonth(date.getMonth() + 1);
+                break;
+            case 'prev':
+                date.setMonth(date.getMonth() - 1);
+                break;
+        }
+        renderCalendar();
+        eventListenerForCalendar();
+    });
+};
 
-const date = new Date();
-date.setDate(1);
-const monthIndex = date.getMonth();
-const year = date.getFullYear();
+const eventListenerForCalendar = () => {
+    const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
+    currentMonthDays = [...currentMonthDaysNodeList];
 
-const firstWeekDayIndex = date.getDay() - 1;
-const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+    // Adds event listener to all days in the month to open the Time modal to select time to book
+    currentMonthDays.forEach(currentMonthDay => openModal('click', currentMonthDay, timeDialog));
 
-const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-let days = '';
+    const nextMonthDaysNodeList = document.querySelectorAll('.next-month-day');
+    nextMonthDays = [...nextMonthDaysNodeList];
+    nextMonthDays.forEach( nextMonthDay => {
+        buttonsMonthFunctionClickListener(nextMonthDay, 'next');
+    });
 
-currentMonth.innerHTML = monthsArray[monthIndex];
-currentYear.innerHTML = year;
+    const prevMonthDaysNodeList = document.querySelectorAll('.prev-month-day');
+    prevMonthDays = [...prevMonthDaysNodeList];
+    prevMonthDays.forEach( prevMonthDay => {
+        if (monthIndex > today.getMonth()) {
+            buttonsMonthFunctionClickListener(prevMonthDay, 'prev');
+        }
+    })
+};
+
+function eventListenerMoveMonths() {
+    buttonsMonthFunctionClickListener(buttonNextMonth, 'next');
+    buttonsMonthFunctionClickListener(buttonPrevMonth, 'prev');
+}
 
 const renderCalendar = () => {
+    date.setDate(1);
+    monthIndex = date.getMonth();
+    const year = date.getFullYear();
+
+    const firstWeekDayIndex = date.getDay() - 1;
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+
+    const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    let days = '';
+
+    currentMonth.innerHTML = monthsArray[monthIndex];
+    currentYear.innerHTML = year;
+
     for (let i = firstWeekDayIndex; i >= 1 ; i--) {
         days += `<div class="prev-month-day">${-1 * (i - lastDayPrevMonth)}</div>`;
     }
     
     for ( let i = 1; i <= lastDay; i++) {
-        days += `<div class="current-month-day">${i}</div>`;
+        if (monthIndex < today.getMonth() && year <= today.getFullYear()){
+            days += `<div class="prev-month-day cursor-not-allowed">${i}</div>`;
+        } else if (monthIndex == today.getMonth()){
+            if(i <= today.getDate() && year == today.getFullYear()) {
+                days += `<div class="prev-month-day cursor-not-allowed">${i}</div>`;
+            } else {
+                days += `<div class="current-month-day">${i}</div>`;
+            }
+        } else {
+            days += `<div class="current-month-day">${i}</div>`;
+        }
     }
     
     for ( let i = 1 ; i <= 42 - firstWeekDayIndex - lastDay ; i++) {
         days += `<div class="next-month-day">${i}</div>`;
         calendarBody.innerHTML = days;
-    }
-
-    const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
-    currentMonthDays = [...currentMonthDaysNodeList];
-
-    // Adds event listener to all days in the month to open the Time modal to select time to book
-    currentMonthDays.forEach(currentMonthDay => openModal('click', currentMonthDay, timeDialog))
+    }    
 };
 
-renderCalendar();
 
+
+renderCalendar();
+eventListenerForCalendar();
+
+
+
+// Render Weather Card Functions and variables
 const longitude = -99.1331785;
 const latitude = 19.4326296;
 const currentDate = new Date();
@@ -184,13 +252,14 @@ const getWeatherIcon = async () => {
 
 const renderWeatherIcon = () => {
     const iconDescription = weatherResponseJson.weather[0].description
+    const weatherIconsArray = iconResponseJson.weatherIcons;
     console.log(iconDescription);
-    const matchingIndexIconName = iconResponseJson.weatherIcons.findIndex(name => name.name == iconDescription);
+    const matchingIndexIconName = weatherIconsArray.findIndex(name => name.name == iconDescription);
     console.log(matchingIndexIconName);
     if (matchingIndexIconName >= 0) {
-        weatherIcon.innerHTML = iconResponseJson.weatherIcons[matchingIndexIconName].svg
+        weatherIcon.innerHTML = weatherIconsArray[matchingIndexIconName].svg
     } else {
-        weatherIcon.innerHTML = iconResponseJson.weatherIcons[2].svg
+        weatherIcon.innerHTML = weatherIconsArray[2].svg
     }
 }
 
