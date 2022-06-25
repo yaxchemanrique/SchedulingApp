@@ -62,6 +62,7 @@ appointmentTimeInputs.forEach(input =>{
             });
         })
 })
+
 //Function that sets an event Listener and opens its modal
 function openModal(listener, target, modal) {
     target.addEventListener(listener, ()=> {
@@ -113,8 +114,10 @@ function setsButtonsMoveMonth() {
         stepThree = document.querySelector('.form-card-container.active')
         buttonPrevMonth = stepThree.querySelector('#prev-btn');
         buttonNextMonth = stepThree.querySelector('#next-btn');
-        console.log('setsButtonsMoveMonth - if =2')
+        console.log('setsButtonsMoveMonth - if =2');
         eventListenerMoveMonths();
+        renderCalendar();
+        eventListenerForCalendar();
     } else {return}
 }
 
@@ -198,14 +201,18 @@ const renderCalendar = () => {
         days += `<div class="next-month-day">${i}</div>`;
         calendarBody.innerHTML = days;
     }    
+    showPrevMonth();
 };
 
-
-
-renderCalendar();
-eventListenerForCalendar();
-
-
+function showPrevMonth () {
+    if (monthIndex <= today.getMonth()) {
+        console.log('hidden');
+        buttonPrevMonth.style.visibility = "hidden";
+    } else {
+        buttonPrevMonth.style.visibility = "visible";
+        console.log('visible');
+    }
+}
 
 // Render Weather Card Functions and variables
 const longitude = -99.1331785;
@@ -227,8 +234,8 @@ const weatherIcon = document.getElementById('weather-icon');
 const API_KEY = '33e210e3244afb4f2582929f61935a15';
 const urlApi= `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${currentDateTimestamp}&appid=${API_KEY}&units=metric` 
 
-let weatherResponseJson = {};
-let iconResponseJson = {};
+let weatherResponseJson;
+let iconResponseJson;
 
 const getCurrentWeather = async () => {
     const response = await fetch(urlApi);
