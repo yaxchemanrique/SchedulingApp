@@ -31,9 +31,74 @@ let selctedAppointmentTime;
 let fullName = document.getElementById('fullName').value;
 let email = '';
 let description = '';
+
+// Render Weather Card Functions and variables
+const longitude = -99.1331785;
+const latitude = 19.4326296;
+const currentDate = new Date();
+const currentDateTimestamp = currentDate.getTime();
+const currentTimeAmPm =  currentDate.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+const currentTime = document.getElementById('currentTime');
+const currentDeg = document.getElementById('curret-deg');
+const highestTemp = document.getElementById('hi-temp');
+const lowestTemp = document.getElementById('lo-temp');
+const weatherIcon = document.getElementById('weather-icon');
+
+
+const API_KEY = '33e210e3244afb4f2582929f61935a15';
+const urlApi= `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${currentDateTimestamp}&appid=${API_KEY}&units=metric` 
+
+let weatherResponseJson;
+let iconResponseJson;
+let timesResponseJsonArray;
+
+const getCurrentWeather = async () => {
+    const response = await fetch(urlApi);
+    weatherResponseJson = await response.json();
+    console.log(weatherResponseJson);
+    
+};
+
+const renderWeather = () => {
+    const currentWeatherResults = weatherResponseJson.main;
+    currentTime.innerText = currentTimeAmPm;
+    currentDeg.innerText = currentWeatherResults.temp;
+    highestTemp.innerText = currentWeatherResults.temp_max;
+    lowestTemp.innerText = currentWeatherResults.temp_min;
+};
+
+const getWeatherIcon = async () => {
+    const iconResponse = await fetch('./assets/icons.json');
+    iconResponseJson = await iconResponse.json();
+    console.log(iconResponseJson);
+};
+
+const renderWeatherIcon = () => {
+    const iconDescription = weatherResponseJson.weather[0].description
+    const weatherIconsArray = iconResponseJson.weatherIcons;
+    console.log(iconDescription);
+    const matchingIndexIconName = weatherIconsArray.findIndex(name => name.name == iconDescription);
+    console.log(matchingIndexIconName);
+    if (matchingIndexIconName >= 0) {
+        weatherIcon.innerHTML = weatherIconsArray[matchingIndexIconName].svg
+    } else {
+        weatherIcon.innerHTML = weatherIconsArray[2].svg
+    }
+}
+
+(async() => {
+    await getCurrentWeather();
+    renderWeather();
+    await getWeatherIcon();
+    renderWeatherIcon();
+})();
+
 //Adds event listener to radio buttons indicating the Appointment type 
 //and adds the class to distinguish wich one was selected
-
 appointmentOptionsLabels.forEach(input => {
     input.addEventListener('click', (e)=> {
         appointmentOptionsInputContainers.forEach(type => {
@@ -47,20 +112,6 @@ appointmentOptionsLabels.forEach(input => {
         e.target.parentElement.classList.add('checked-radio');
         selctedAppointmentType = e.target.value;
     })
-})
-
-appointmentTimeInputs.forEach(input =>{
-    let labelOptions = [...document.querySelectorAll('.time-tag-label')];
-        input.addEventListener('click', (e) => {
-            const selectedLabelId = e.target.id;
-            labelOptions.forEach(label => {
-                label.classList.remove('checked');
-                console.log(label.id, selectedLabelId);
-                if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
-                    label.classList.add('checked');
-                }
-            });
-        })
 })
 
 submitBtn.addEventListener('click', (e)=> {
@@ -117,38 +168,6 @@ function setsButtonsMoveMonth() {
 }
 
 // Render Calendar Functions and variables
-let targetOpenModal = '';
-
-function openTimeModal(currentMonthDay) {
-    currentMonthDay.addEventListener('click', (e)=> {
-        timeDialog.showModal();
-        targetOpenModal =  e.target.innerText;
-        console.log(targetOpenModal);
-        (async() => {
-            console.log('entró al async');
-            await getAllTimes();
-            console.log('pasó 1await');
-            renderTimeTags();
-            console.log('pasó renderTime');
-        })();
-    });
-}
-
-const buttonsMonthFunctionClickListener = (button, move) => {
-    button.addEventListener('click', () => {
-        switch (move) {
-            case 'next':
-                date.setMonth(date.getMonth() + 1);
-                break;
-            case 'prev':
-                date.setMonth(date.getMonth() - 1);
-                break;
-        }
-        renderCalendar();
-        eventListenerForCalendar();
-    });
-};
-
 const eventListenerForCalendar = () => {
     const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
     currentMonthDays = [...currentMonthDaysNodeList];
@@ -226,71 +245,20 @@ function showPrevMonth () {
     }
 }
 
-// Render Weather Card Functions and variables
-const longitude = -99.1331785;
-const latitude = 19.4326296;
-const currentDate = new Date();
-const currentDateTimestamp = currentDate.getTime();
-const currentTimeAmPm =  currentDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-
-const currentTime = document.getElementById('currentTime');
-const currentDeg = document.getElementById('curret-deg');
-const highestTemp = document.getElementById('hi-temp');
-const lowestTemp = document.getElementById('lo-temp');
-const weatherIcon = document.getElementById('weather-icon');
-
-
-const API_KEY = '33e210e3244afb4f2582929f61935a15';
-const urlApi= `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${currentDateTimestamp}&appid=${API_KEY}&units=metric` 
-
-let weatherResponseJson;
-let iconResponseJson;
-let timesResponseJsonArray;
-
-const getCurrentWeather = async () => {
-    const response = await fetch(urlApi);
-    weatherResponseJson = await response.json();
-    console.log(weatherResponseJson);
-    
-};
-
-const renderWeather = () => {
-    const currentWeatherResults = weatherResponseJson.main;
-    currentTime.innerText = currentTimeAmPm;
-    currentDeg.innerText = currentWeatherResults.temp;
-    highestTemp.innerText = currentWeatherResults.temp_max;
-    lowestTemp.innerText = currentWeatherResults.temp_min;
-};
-
-const getWeatherIcon = async () => {
-    const iconResponse = await fetch('./assets/icons.json');
-    iconResponseJson = await iconResponse.json();
-    console.log(iconResponseJson);
-};
-
-const renderWeatherIcon = () => {
-    const iconDescription = weatherResponseJson.weather[0].description
-    const weatherIconsArray = iconResponseJson.weatherIcons;
-    console.log(iconDescription);
-    const matchingIndexIconName = weatherIconsArray.findIndex(name => name.name == iconDescription);
-    console.log(matchingIndexIconName);
-    if (matchingIndexIconName >= 0) {
-        weatherIcon.innerHTML = weatherIconsArray[matchingIndexIconName].svg
-    } else {
-        weatherIcon.innerHTML = weatherIconsArray[2].svg
-    }
+function openTimeModal(currentMonthDay) {
+    currentMonthDay.addEventListener('click', (e)=> {
+        timeDialog.showModal();
+        targetOpenModal =  e.target.innerText;
+        console.log(targetOpenModal);
+        (async() => {
+            console.log('entró al async');
+            await getAllTimes();
+            console.log('pasó 1await');
+            renderTimeTags();
+            console.log('pasó renderTime');
+        })();
+    });
 }
-
-(async() => {
-    await getCurrentWeather();
-    renderWeather();
-    await getWeatherIcon();
-    renderWeatherIcon();
-})();
-
 
 //render TimeSlots in Time Modal
 
@@ -299,6 +267,39 @@ const renderWeatherIcon = () => {
 //cal add event listenerxx
 const morningTagsContainer = document.querySelector('#time-tags-morning');
 const eveningTagsContainer = document.querySelector('#time-tags-evening');
+let targetOpenModal = '';
+
+
+const buttonsMonthFunctionClickListener = (button, move) => {
+    button.addEventListener('click', () => {
+        switch (move) {
+            case 'next':
+                date.setMonth(date.getMonth() + 1);
+                break;
+            case 'prev':
+                date.setMonth(date.getMonth() - 1);
+                break;
+        }
+        renderCalendar();
+        eventListenerForCalendar();
+    });
+};
+
+function eventListenerForTimeTags() {
+    appointmentTimeInputs.forEach(input =>{
+        let labelOptions = [...document.querySelectorAll('.time-tag-label')];
+            input.addEventListener('click', (e) => {
+                const selectedLabelId = e.target.id;
+                labelOptions.forEach(label => {
+                    label.classList.remove('checked');
+                    console.log(label.id, selectedLabelId);
+                    if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
+                        label.classList.add('checked');
+                    }
+                });
+            })
+    });
+}
 
 
 const getAllTimes = async () => {
@@ -306,9 +307,6 @@ const getAllTimes = async () => {
     const timesResponseJson = await timesResponse.json();
     timesResponseJsonArray = timesResponseJson.appointmentSlots;    
 };
-
-
-
 
 const renderTimeTags = () =>{
     let selectedDateWDashes = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}`;
