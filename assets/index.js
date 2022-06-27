@@ -22,6 +22,8 @@ const today = new Date();
 const todayDay = today.getDate();
 const date = new Date();
 
+const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
 let buttonPrevMonth;
 let buttonNextMonth;
 let monthIndex;
@@ -114,15 +116,6 @@ appointmentOptionsLabels.forEach(input => {
     })
 })
 
-submitBtn.addEventListener('click', (e)=> {
-    e.preventDefault();
-    submitBtn.style.pointerEvents = 'none';
-    submitBtn.classList.add('animating');
-    buttonAnimation.addEventListener('animationend', () => {
-        successDialog.showModal();
-    })
-});
-
 let currentStep = formSteps.findIndex(step => {
     return step.classList.contains('active');
 });
@@ -204,7 +197,6 @@ const renderCalendar = () => {
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     const lastDayPrevMonth = new Date(date.getFullYear(), date.getMonth(), 0).getDate();
 
-    const monthsArray = [ 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     let days = '';
 
     currentMonth.innerHTML = monthsArray[monthIndex];
@@ -269,6 +261,8 @@ const morningTagsContainer = document.querySelector('#time-tags-morning');
 const eveningTagsContainer = document.querySelector('#time-tags-evening');
 let targetOpenModal;
 let selectedTime;
+let dateSelectedByUser;
+let dateSelectedByUserToPrint;
 
 function openTimeModal(currentMonthDay) {
     currentMonthDay.addEventListener('click', (e)=> {
@@ -292,10 +286,9 @@ const getAllTimes = async () => {
 };
 
 const renderTimeTags = () =>{
-    let selectedDateWDashes = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}`;
-    if(monthIndex + 1 >= 10){
-        selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
-    }
+    morningTagsContainer.innerHTML= ''; 
+    eveningTagsContainer.innerHTML= ''; 
+    let selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
     for (let i = 0; i < timesResponseJsonArray.length; i++) {
         console.log(selectedDateWDashes, timesResponseJsonArray[i].date);
         if (selectedDateWDashes === timesResponseJsonArray[i].date) {
@@ -369,3 +362,14 @@ function eventListenerForTimeTags() {
         })
     });
 }
+
+//About the Success Modal
+
+submitBtn.addEventListener('click', (e)=> {
+    e.preventDefault();
+    submitBtn.style.pointerEvents = 'none';
+    submitBtn.classList.add('animating');
+    buttonAnimation.addEventListener('animationend', () => {
+        successDialog.showModal();
+    })
+});
