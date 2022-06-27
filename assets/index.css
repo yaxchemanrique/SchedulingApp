@@ -177,6 +177,7 @@ form {
 
 .image-container {
 	grid-area: image;
+	align-self: center;
 }
 
 .image-container > img {
