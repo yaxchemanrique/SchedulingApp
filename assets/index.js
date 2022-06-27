@@ -406,3 +406,8 @@ async function forecastWeather() {
     await getWeatherForecast();
     renderForecastWeather();
 }
+
+const doneButton = document.getElementById('done');
+doneButton.addEventListener('click', () => {
+    window.location.reload();
+})
