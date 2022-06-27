@@ -144,11 +144,13 @@ form {
 	width: 4rem;
 	height: 4rem;
 	text-align: center;
-	vertical-align: middle;
 	line-height: 4rem;
 	background-color: var(--clr-pink);
 	border-radius: 50%;
 	z-index: 3;
+	display: grid;
+	place-content: center;
+	position: relative;
 }
 
 .navbar-step::before {
@@ -160,7 +162,7 @@ form {
 	top: 50%;
 	left: 100%;
 	z-index: -1;
-	position: relative;
+	position: absolute;
 }
 
 .navbar-step:last-of-type::before {
