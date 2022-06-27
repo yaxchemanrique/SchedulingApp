@@ -62,7 +62,6 @@ const getCurrentWeather = async () => {
     const response = await fetch(urlApi);
     weatherResponseJson = await response.json();
     console.log(weatherResponseJson);
-    
 };
 
 const renderWeather = () => {
@@ -358,7 +357,8 @@ function eventListenerForTimeTags() {
             });
             const selectedTimeIndex= selectedLabelId.slice(4);
             selectedTime = timesResponseJsonArray[selectedTimeIndex].time
-            console.log(selectedTime);
+            insertSelectedDataToSuccesMsg();
+            forecastWeather();
         })
     });
 }
@@ -373,3 +373,53 @@ submitBtn.addEventListener('click', (e)=> {
         successDialog.showModal();
     })
 });
+
+//Inserting Obtained Data in form
+function insertSelectedDataToSuccesMsg() {
+    dateSelectedByUser = `Año: ${date.getFullYear()}, mes: ${monthIndex}, dia: ${targetOpenModal}`;
+    dateSelectedByUserToPrint = `${date.toLocaleString('en-us', {weekday: 'long'})}, ${monthsArray[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    const fullDateSuccessMessage = document.getElementById('full-date');
+    const timeSucessMessage = document.getElementById('time');
+    fullDateSuccessMessage.innerText = dateSelectedByUserToPrint;
+    timeSucessMessage.innerText = selectedTime;
+}
+
+
+let selectedDateTimeFormatToTimestamp;
+let urlApiForecast;
+let weatherForecastResponseJson;
+function timeFormatToTimestamp() {
+    if (monthIndex + 1 >= 10){
+        if(targetOpenModal >= 10) {
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}T${selectedTime}`;
+        }else {
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-0${targetOpenModal}T${selectedTime}`;
+        }
+    } else {
+        console.log(monthIndex + 1, 'monthIndex + 1');
+        if(targetOpenModal >= 10) {
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}T${selectedTime}`;
+        }else {
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-0${targetOpenModal}T${selectedTime}`;
+        }
+    }
+    let timestampForForecast = new Date(selectedDateTimeFormatToTimestamp).getTime();
+    urlApiForecast = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${timestampForForecast}&appid=${API_KEY}&units=metric`; 
+}
+
+async function getWeatherForecast() {
+    const responseForecast = await fetch(urlApiForecast);
+    weatherForecastResponseJson = await responseForecast.json();
+}
+
+const renderForecastWeather = () => {
+    const weatherSuggestionMessage = document.getElementById('weather-suggestion-message');
+    weatherSuggestionMessage.innerHTML = `Take your precautions.<br>It's going to be ${weatherForecastResponseJson.main.temp}°C,<br>with ${weatherForecastResponseJson.weather[0].description}`;
+};
+
+async function forecastWeather() {
+    timeFormatToTimestamp();
+    await getWeatherForecast();
+    renderForecastWeather();
+}
+
