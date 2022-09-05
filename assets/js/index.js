@@ -1,3 +1,5 @@
+import { API_URL_APPOINTMENTS } from "./constants.js";
+
 const timeDialog = document.querySelector('#time-dialog');
 
 const successDialog = document.getElementById('sucess-dialog');
@@ -143,9 +145,11 @@ function navbarCurrentStep() {
 
 function setsButtonsMoveMonth() {
     if(currentStep === 2){
-        stepThree = document.querySelector('.form-card-container.active')
-        buttonPrevMonth = stepThree.querySelector('#prev-btn');
-        buttonNextMonth = stepThree.querySelector('#next-btn');
+        let stepThree = document.querySelector('.form-card-container.active')
+        if (stepThree) {
+            buttonPrevMonth = stepThree.querySelector('#prev-btn');
+            buttonNextMonth = stepThree.querySelector('#next-btn');
+        }
         eventListenerMoveMonths();
         renderCalendar();
         eventListenerForCalendar();
@@ -155,19 +159,19 @@ function setsButtonsMoveMonth() {
 // Render Calendar Functions and variables
 const eventListenerForCalendar = () => {
     const currentMonthDaysNodeList = document.querySelectorAll('.current-month-day');
-    currentMonthDays = [...currentMonthDaysNodeList];
+    let currentMonthDays = [...currentMonthDaysNodeList];
 
     // Adds event listener to all days in the month to open the Time modal to select time to book
     currentMonthDays.forEach(currentMonthDay => openTimeModal(currentMonthDay));
 
     const nextMonthDaysNodeList = document.querySelectorAll('.next-month-day');
-    nextMonthDays = [...nextMonthDaysNodeList];
+    let nextMonthDays = [...nextMonthDaysNodeList];
     nextMonthDays.forEach( nextMonthDay => {
         buttonsMonthFunctionClickListener(nextMonthDay, 'next');
     });
 
     const prevMonthDaysNodeList = document.querySelectorAll('.prev-month-day');
-    prevMonthDays = [...prevMonthDaysNodeList];
+    let prevMonthDays = [...prevMonthDaysNodeList];
     prevMonthDays.forEach( prevMonthDay => {
         if (monthIndex > today.getMonth()) {
             buttonsMonthFunctionClickListener(prevMonthDay, 'prev');
@@ -266,8 +270,11 @@ async function getTimesRenderTimetags() {
 }
 
 const getAllTimes = async () => {
-    const timesResponse = await fetch('./assets/appointment-slots.json');
+    // const timesResponse = await fetch(API_URL_APPOINTMENTS);
+    console.log('aqui:', API_URL_APPOINTMENTS);
+    const timesResponse = await fetch('assets/dummies/appointments-slots.json');
     const timesResponseJson = await timesResponse.json();
+    console.log('timesResponseJson: ', timesResponseJson)
     timesResponseJsonArray = timesResponseJson.appointmentSlots;    
 };
 

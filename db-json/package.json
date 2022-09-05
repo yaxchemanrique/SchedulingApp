@@ -1,0 +1,11 @@
+{
+  "name": "db-json",
+  "version": "1.0.0",
+  "description": "Fake db for Scheduling App",
+  "main": "index.js",
+  "scripts": {
+    "server": "json-server --watch db.json"
+  },
+  "author": "",
+  "license": "ISC"
+}
