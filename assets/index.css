@@ -505,7 +505,7 @@ h3 {
 }
 
 .time-tag-label.disabled {
-	cursor: not-allowed;
+	pointer-events: none;
 	border: solid var(--clr-grey) 1px;
 	color: var(--clr-grey);
 }

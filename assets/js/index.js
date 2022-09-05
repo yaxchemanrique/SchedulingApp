@@ -343,24 +343,28 @@ const renderTimeTags = () =>{
     }
 }
 
+let selectedTimeTag;
 function eventListenerForTimeTags() {
-    const appointmentTimeInputs = [...document.querySelectorAll('input[name="appt-time"]')];
-    appointmentTimeInputs.forEach(input =>{
-        let labelOptions = [...document.querySelectorAll('.time-tag-label')];
-        input.addEventListener('click', (e) => {
-            let selectedLabelId = e.target.id;
-            labelOptions.forEach(label => {
-                label.classList.remove('checked');
-                if (label.id == `${selectedLabelId}-label` && !label.classList.contains('disabled')) {
-                    label.classList.add('checked');
+    const timeTagsInputs = document.querySelectorAll('input[name="appt-time"]');
+    for (let i = 0; i < timeTagsInputs.length; i++) {
+        timeTagsInputs[i].addEventListener('click', (e)=> {
+            for (let j = 0; j < timeTagsInputs.length; j++) {
+                timeTagsInputs[j].nextElementSibling.classList.remove('checked');
+            }
+            timeTagsInputs[i].classList.remove('checked');
+            console.log(timeTagsInputs[i]);
+            if(timeTagsInputs[i].checked){
+                selectedTimeTag = timeTagsInputs[i].value;
+                console.log(selectedTimeTag);
+                if (!timeTagsInputs[i].nextElementSibling.classList.contains('disabled')) {
+                    timeTagsInputs[i].nextElementSibling.classList.add('checked');
                 }
-            });
-            const selectedTimeIndex= selectedLabelId.slice(4);
-            selectedTime = timesResponseJsonArray[selectedTimeIndex].time
+            }
             insertSelectedDataToSuccesMsg();
             forecastWeather();
         })
-    });
+        
+    }
 }
 
 //About the Success Modal
@@ -376,12 +380,13 @@ submitBtn.addEventListener('click', (e)=> {
 
 //Inserting Obtained Data in form
 function insertSelectedDataToSuccesMsg() {
-    dateSelectedByUser = `Año: ${date.getFullYear()}, mes: ${monthIndex}, dia: ${targetOpenModal}`;
+    dateSelectedByUser = `Año: ${date.getFullYear()}, mes: ${monthIndex + 1}, dia: ${targetOpenModal}`;
     dateSelectedByUserToPrint = `${date.toLocaleString('en-us', {weekday: 'long'})}, ${monthsArray[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+    console.log(dateSelectedByUserToPrint);
     const fullDateSuccessMessage = document.getElementById('full-date');
     const timeSucessMessage = document.getElementById('time');
     fullDateSuccessMessage.innerText = dateSelectedByUserToPrint;
-    timeSucessMessage.innerText = selectedTime;
+    timeSucessMessage.innerText = selectedTimeTag;
 }
 
 //Gets and renders forcast for selected Date
@@ -391,15 +396,15 @@ let weatherForecastResponseJson;
 function timeFormatToTimestamp() {
     if (monthIndex + 1 >= 10){
         if(targetOpenModal >= 10) {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}T${selectedTime}`;
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}T${selectedTimeTag}`;
         }else {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-0${targetOpenModal}T${selectedTime}`;
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-0${targetOpenModal}T${selectedTimeTag}`;
         }
     } else {
         if(targetOpenModal >= 10) {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}T${selectedTime}`;
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}T${selectedTimeTag}`;
         }else {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-0${targetOpenModal}T${selectedTime}`;
+            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-0${targetOpenModal}T${selectedTimeTag}`;
         }
     }
     let timestampForForecast = new Date(selectedDateTimeFormatToTimestamp).getTime();
