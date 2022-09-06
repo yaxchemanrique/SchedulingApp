@@ -1,4 +1,4 @@
-import { API_URL_APPOINTMENTS, SCHEDULES } from "./constants.js";
+import { API_URL_APPOINTMENTS, CONFIG_POST, SCHEDULES } from "./constants.js";
 
 const timeDialog = document.querySelector('#time-dialog');
 
@@ -352,7 +352,6 @@ function eventListenerForTimeTags() {
                 timeTagsInputs[j].nextElementSibling.classList.remove('checked');
             }
             timeTagsInputs[i].classList.remove('checked');
-            console.log(timeTagsInputs[i]);
             if(timeTagsInputs[i].checked){
                 selectedTimeTag = timeTagsInputs[i].value;
                 console.log(selectedTimeTag);
@@ -369,14 +368,25 @@ function eventListenerForTimeTags() {
 
 //About the Success Modal
 
-submitBtn.addEventListener('click', (e)=> {
+multistepForm.addEventListener('submit', submitHandler)
+
+function submitHandler(e) {
     e.preventDefault();
+    startLoader();
+};
+
+function startLoader() {
     submitBtn.style.pointerEvents = 'none';
     submitBtn.classList.add('animating');
     buttonAnimation.addEventListener('animationend', () => {
         successDialog.showModal();
+        //! aqui me quede
+        // if(stutus == 204) {
+        // } else {
+        //     error modal
+        // }
     })
-});
+}
 
 //Inserting Obtained Data in form
 function insertSelectedDataToSuccesMsg() {
