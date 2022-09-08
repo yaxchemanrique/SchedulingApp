@@ -455,4 +455,4 @@ async function forecastWeather() {
 const doneButton = document.getElementById('done');
 doneButton.addEventListener('click', () => {
     window.location.reload();
-})
+});
