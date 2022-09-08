@@ -29,10 +29,6 @@ let buttonNextMonth;
 let monthIndex;
 
 let selctedAppointmentType;
-let selctedAppointmentTime;
-let fullName = document.getElementById('fullName').value;
-let email = '';
-let description = '';
 
 // Render Weather Card Functions and variables
 const longitude = -99.1331785;
@@ -220,11 +216,11 @@ const renderCalendar = () => {
         days += `<div class="next-month-day">${i}</div>`;
         calendarBody.innerHTML = days;
     }    
-    showPrevMonth();
+    showPrevMonth(year);
 };
 
-function showPrevMonth () {
-    if (monthIndex <= today.getMonth()) {
+function showPrevMonth (year) {
+    if ((monthIndex <= today.getMonth()) && (year <= today.getFullYear())) {
         buttonPrevMonth.style.visibility = "hidden";
     } else {
         buttonPrevMonth.style.visibility = "visible";
