@@ -1,4 +1,5 @@
 const API_URL_APPOINTMENTS = 'http://localhost:3000/appointmentSlots';
+//const API_URL_APPOINTMENTS = 'https://dbschedulingapp.glitch.me/appointmentSlots';
 
 const CONFIG_POST = {
     method: 'POST',

@@ -271,7 +271,7 @@ async function getTimesRenderTimetags() {
 
 const getAllTimes = async () => {
     let selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
-    const queryUrl = `${API_URL_APPOINTMENTS}?date=${selectedDateWDashes}`
+    const queryUrl = `${API_URL_APPOINTMENTS}?date=${selectedDateWDashes}`;
     const timesResponse = await fetch(queryUrl);
     const timesResponseJson = await timesResponse.json();
     timesResponseJsonArray = timesResponseJson;    
@@ -368,10 +368,10 @@ function eventListenerForTimeTags() {
 
 //About the Success Modal
 
-multistepForm.addEventListener('submit', submitHandler)
+multistepForm.addEventListener('submit', handleApiCall)
 
-function submitHandler(e) {
-    e.preventDefault();
+function submitHandler() {
+    handleApiCall();
     startLoader();
 };
 
@@ -386,6 +386,26 @@ function startLoader() {
         //     error modal
         // }
     })
+}
+
+async function handleApiCall(e) {
+    e.preventDefault();
+    //! No vayas a dejarlo como foo D:
+    console.log(selectedTimeTag, dateSelectedByUser);
+    const CONFIG_POST = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id : 21, time: selectedTimeTag, date: dateSelectedByUser
+        })
+    }
+    // const foo = { id : 6, time: selectedTimeTag, date: dateSelectedByUser };
+    const rawResponse = await fetch(API_URL_APPOINTMENTS, CONFIG_POST);
+    const content = await rawResponse.json();
+    console.log(content);
+    console.log('rawResponse: ', rawResponse.status);
 }
 
 //Inserting Obtained Data in form
