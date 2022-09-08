@@ -1,4 +1,4 @@
-import { API_URL_APPOINTMENTS, CONFIG_POST, SCHEDULES } from "./constants.js";
+import { API_URL_APPOINTMENTS, SCHEDULES } from "./constants.js";
 
 const timeDialog = document.querySelector('#time-dialog');
 
@@ -251,9 +251,7 @@ const buttonsMonthFunctionClickListener = (button, move) => {
 const morningTagsContainer = document.querySelector('#time-tags-morning');
 const eveningTagsContainer = document.querySelector('#time-tags-evening');
 let targetOpenModal;
-let selectedTime;
-let dateSelectedByUser;
-let dateSelectedByUserToPrint;
+let selectedDateWDashes;
 
 function openTimeModal(currentMonthDay) {
     currentMonthDay.addEventListener('click', (e)=> {
@@ -270,7 +268,21 @@ async function getTimesRenderTimetags() {
 }
 
 const getAllTimes = async () => {
-    let selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
+    selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
+    if (monthIndex + 1 >= 10){
+        if(targetOpenModal >= 10) {
+            selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}`;
+        }else {
+            selectedDateWDashes = `${date.getFullYear()}-${monthIndex + 1}-0${targetOpenModal}`;
+        }
+    } else {
+        if(targetOpenModal >= 10) {
+            selectedDateWDashes = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}`;
+        }else {
+            selectedDateWDashes = `${date.getFullYear()}-0${monthIndex + 1}-0${targetOpenModal}`;
+        }
+    }
+
     const queryUrl = `${API_URL_APPOINTMENTS}?date=${selectedDateWDashes}`;
     const timesResponse = await fetch(queryUrl);
     const timesResponseJson = await timesResponse.json();
@@ -368,80 +380,64 @@ function eventListenerForTimeTags() {
 
 //About the Success Modal
 
-multistepForm.addEventListener('submit', handleApiCall)
+multistepForm.addEventListener('submit', submitHandler);
 
-function submitHandler() {
-    handleApiCall();
-    startLoader();
-};
-
-function startLoader() {
-    submitBtn.style.pointerEvents = 'none';
-    submitBtn.classList.add('animating');
-    buttonAnimation.addEventListener('animationend', () => {
-        successDialog.showModal();
-        //! aqui me quede
-        // if(stutus == 204) {
-        // } else {
-        //     error modal
-        // }
-    })
-}
-
-async function handleApiCall(e) {
+async function submitHandler(e) {
     e.preventDefault();
-    //! No vayas a dejarlo como foo D:
-    console.log(selectedTimeTag, dateSelectedByUser);
+    const dbUrl = `${API_URL_APPOINTMENTS}`;
+    const allTimesResponse = await fetch(dbUrl);
+    const allTimesResponseJson = await allTimesResponse.json();
+
+    const configPostId = allTimesResponseJson.length + 1;
     const CONFIG_POST = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            id : 21, time: selectedTimeTag, date: dateSelectedByUser
-        })
+            id : configPostId, time: selectedTimeTag, date: selectedDateWDashes
+        }),
     }
-    // const foo = { id : 6, time: selectedTimeTag, date: dateSelectedByUser };
+
     const rawResponse = await fetch(API_URL_APPOINTMENTS, CONFIG_POST);
     const content = await rawResponse.json();
+    console.log(rawResponse);
     console.log(content);
-    console.log('rawResponse: ', rawResponse.status);
+
+    submitBtn.style.pointerEvents = 'none';
+    submitBtn.classList.add('animating');
+    if (rawResponse.status === 201) {
+        buttonAnimation.addEventListener('animationend', () => {
+            successDialog.showModal();
+        })
+    } else {
+        alert('Error: ', rawResponse.status)
+    }
 }
 
+let selectedDateTimestamp;
 //Inserting Obtained Data in form
 function insertSelectedDataToSuccesMsg() {
-    dateSelectedByUser = `Año: ${date.getFullYear()}, mes: ${monthIndex + 1}, dia: ${targetOpenModal}`;
-    dateSelectedByUserToPrint = `${date.toLocaleString('en-us', {weekday: 'long'})}, ${monthsArray[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
-    console.log(dateSelectedByUserToPrint);
+    selectedDateTimestamp = `${selectedDateWDashes}T${selectedTimeTag}`;
+    
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateSelectedByUserToPrint = new Date(selectedDateTimestamp); 
+    
     const fullDateSuccessMessage = document.getElementById('full-date');
     const timeSucessMessage = document.getElementById('time');
-    fullDateSuccessMessage.innerText = dateSelectedByUserToPrint;
+    fullDateSuccessMessage.innerText = dateSelectedByUserToPrint.toLocaleDateString("en-US", dateOptions);
     timeSucessMessage.innerText = selectedTimeTag;
 }
 
 //Gets and renders forcast for selected Date
-let selectedDateTimeFormatToTimestamp;
 let urlApiForecast;
 let weatherForecastResponseJson;
-function timeFormatToTimestamp() {
-    if (monthIndex + 1 >= 10){
-        if(targetOpenModal >= 10) {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-${targetOpenModal}T${selectedTimeTag}`;
-        }else {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-${monthIndex + 1}-0${targetOpenModal}T${selectedTimeTag}`;
-        }
-    } else {
-        if(targetOpenModal >= 10) {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-${targetOpenModal}T${selectedTimeTag}`;
-        }else {
-            selectedDateTimeFormatToTimestamp = `${date.getFullYear()}-0${monthIndex + 1}-0${targetOpenModal}T${selectedTimeTag}`;
-        }
-    }
-    let timestampForForecast = new Date(selectedDateTimeFormatToTimestamp).getTime();
-    urlApiForecast = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${timestampForForecast}&appid=${API_KEY}&units=metric`; 
-}
+
 
 async function getWeatherForecast() {
+    let timestampForForecast = new Date(selectedDateTimestamp).getTime();
+    urlApiForecast = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&dt=${timestampForForecast}&appid=${API_KEY}&units=metric`; 
     const responseForecast = await fetch(urlApiForecast);
     weatherForecastResponseJson = await responseForecast.json();
 }
@@ -452,7 +448,6 @@ const renderForecastWeather = () => {
 };
 
 async function forecastWeather() {
-    timeFormatToTimestamp();
     await getWeatherForecast();
     renderForecastWeather();
 }
